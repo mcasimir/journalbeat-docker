@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  beat:
+    build: . # mcasimir/journalbeat
+    environment:
+      ELASTICSEARCH_HOST: elasticsearch:9200
+      LOG_LEVEL: debug
+    volumes:
+      - "/var/tmp/journalbeat:/data"
+      - "/var/log/journal:/var/log/journal"
