@@ -7,11 +7,20 @@ docker run \
     -d \
     --restart always \
     -v /var/tmp/journalbeat:/data \
-    -v /var/log/journal:/var/log/journal \
+    -v /run/log/journal:/var/log/journal \
+    -v /etc/machine-id:/etc/machine-id \
     -e ELASTICSEARCH_HOST=elasticsearch:9200 \
     -e LOG_LEVEL=warning \
     mcasimir/journalbeat
 ```
+
+Check that an index has been created with:
+
+```
+curl -XGET 'elasticsearch:9200/_cat/indices?v&pretty'
+```
+
+**NOTE:** The host path for the mount `/run/log/journal:/var/log/journal` is different from an os to another.
 
 ## Run on a single host as `docker-compose v2` service
 
@@ -29,7 +38,8 @@ services:
 
     volumes:
       - "/var/tmp/journalbeat:/data"
-      - "/var/log/journal:/var/log/journal"
+      - "/run/log/journal:/var/log/journal"
+      - "/etc/machine-id:/etc/machine-id"
 ```
 
 ## Deploy in `global` mode on swarm with `docker service create`
@@ -37,9 +47,10 @@ services:
 ```sh
 docker service create \
   --name journalbeat \
-  --mode global
-  --mount type=bind,source=/var/tmp/journalbeat,destination=/data \
-  --mount type=bind,source=/var/log/journal,destination=/var/log/journal \
+  --mode global \
+  -v "/var/tmp/journalbeat:/data" \
+  -v "/run/log/journal:/var/log/journal" \
+  -v "/etc/machine-id:/etc/machine-id" \
   -e ELASTICSEARCH_HOST=elasticsearch:9200 \
   -e LOG_LEVEL: warning \
   mcasimir/journalbeat
@@ -60,7 +71,8 @@ services:
 
     volumes:
       - "/var/tmp/journalbeat:/data"
-      - "/var/log/journal:/var/log/journal"
+      - "/run/log/journal:/var/log/journal"
+      - "/etc/machine-id:/etc/machine-id"
 
     deploy:
       mode: "global"
