@@ -13,7 +13,7 @@ docker run \
     mcasimir/journalbeat
 ```
 
-## Run on a single hos+t as `docker-compose v2` service
+## Run on a single host as `docker-compose v2` service
 
 ``` yaml
 version: '2'
@@ -34,7 +34,7 @@ services:
 
 ## Deploy in `global` mode on swarm with `docker service create`
 
-```
+```sh
 docker service create \
   --name journalbeat \
   --mode global
@@ -66,6 +66,6 @@ services:
       mode: "global"
 ```
 
-```
+```sh
 docker stack deploy -c docker-compose.yml journalbeat
 ```
