@@ -11,4 +11,4 @@ release: build
 	@docker push mcasimir/journalbeat:latest
 
 run: build
-	@docker-compose up --force-recreate
+	@docker stack deploy -c docker-compose.yml journalbeat

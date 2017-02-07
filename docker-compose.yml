@@ -4,14 +4,17 @@ services:
   beat:
     image: mcasimir/journalbeat
 
-    environment:
-      ELASTICSEARCH_HOST: elasticsearch.example.com:9200
-      LOG_LEVEL: warning
+    env_file: .env
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "1"
 
     volumes:
-      - "$PWD/data:/data"
-      - "/run/log/journal:/var/log/journal"
-      - "/etc/machine-id:/etc/machine-id"
+      - "/run/log/journal:/var/log/journal:ro"
+      - "/etc/machine-id:/etc/machine-id:ro"
 
     deploy:
       mode: "global"

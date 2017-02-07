@@ -19,7 +19,7 @@ journalbeat:
 
   # Lowercase and remove leading underscores, e.g. "_MESSAGE" -> "message"
   # (default to false)
-  #clean_field_names: true
+  clean_field_names: true
 
   # All journal entries are strings by default. You can try to convert them to numbers.
   # (defaults to false)
@@ -32,7 +32,7 @@ journalbeat:
   #  - no repeated dots;
   #  - no trailing dots, e.g. "journal..field_name." will fail
   # (defaults to "" hence stores on the upper level of the event)
-  #move_metadata_to_field: ""
+  # move_metadata_to_field: ""
 
   # Specific units to monitor.
   #units: ["httpd.service"]
@@ -89,11 +89,36 @@ tags: ["CONTAINER_ID", "CONTAINER_ID_FULL", "CONTAINER_NAME", "CONTAINER_TAG", "
 # contain CPU load percentages, but remove the fields that contain CPU ticks
 # values:
 #
-#processors:
-#- include_fields:
+processors:
+# - include_fields:
 #    fields: ["cpu"]
-#- drop_fields:
-#    fields: ["cpu.user", "cpu.system"]
+- drop_fields:
+   fields:
+    - "boot_id"
+    - "cap_effective"
+    - "cmdline"
+    - "comm"
+    - "container_id_full"
+    - "container_tag"
+    - "exe"
+    - "gid"
+    - "input_type"
+    - "machine_id"
+    - "pid"
+    - "source_realtime_timestamp"
+    - "systemd_cgroup"
+    - "systemd_slice"
+    - "systemd_unit"
+    - "tags"
+    - "transport"
+    - "type"
+    - "uid"
+
+- drop_event:
+    when:
+      regexp:
+        container_name: "^journalbeat"
+
 #
 # The following example drops the events that have the HTTP response code 200:
 #
@@ -124,8 +149,11 @@ output.elasticsearch:
   # Scheme and port can be left out and will be set to the default (http and 9200)
   # In case you specify and additional path, the scheme is required: http://localhost:9200/path
   # IPv6 addresses should always be defined as: https://[2001:db8::1]:9200
+
   hosts: ["${ELASTICSEARCH_HOST}"]
-  template.name: journalbeat
+  template.name: docker-${ENVIRONMENT_NAME}
+  template.overwrite: true
+  index: docker-${ENVIRONMENT_NAME}-%{+yyyy.MM.dd}
 
   # Set gzip compression level.
   #compression_level: 0
