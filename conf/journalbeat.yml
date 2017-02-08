@@ -90,34 +90,28 @@ tags: ["CONTAINER_ID", "CONTAINER_ID_FULL", "CONTAINER_NAME", "CONTAINER_TAG", "
 # values:
 #
 processors:
-# - include_fields:
-#    fields: ["cpu"]
-- drop_fields:
-   fields:
-    - "boot_id"
-    - "cap_effective"
-    - "cmdline"
-    - "comm"
-    - "container_id_full"
-    - "container_tag"
-    - "exe"
-    - "gid"
-    - "input_type"
-    - "machine_id"
-    - "pid"
-    - "source_realtime_timestamp"
-    - "systemd_cgroup"
-    - "systemd_slice"
-    - "systemd_unit"
-    - "tags"
-    - "transport"
-    - "type"
-    - "uid"
-
 - drop_event:
     when:
       regexp:
         container_name: "^journalbeat"
+
+- include_fields:
+    fields:
+    - container_id
+    - container_name
+    - message
+    - com_docker_stack_namespace
+    - com_docker_swarm_service_name
+    - hostname
+
+- decode_json_fields:
+    fields: ["message"]
+    target: fields
+
+- drop_event:
+    when:
+      regexp:
+        container_name: "^$"
 
 #
 # The following example drops the events that have the HTTP response code 200:
