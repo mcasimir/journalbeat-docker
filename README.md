@@ -9,15 +9,9 @@ docker run \
     -v /var/tmp/journalbeat:/data \
     -v /run/log/journal:/var/log/journal \
     -v /etc/machine-id:/etc/machine-id \
-    -e ELASTICSEARCH_HOST=elasticsearch:9200 \
+    -e LOGSTASH_HOST=logstash:5044 \
     -e LOG_LEVEL=warning \
     mcasimir/journalbeat
-```
-
-Check that an index has been created with:
-
-```
-curl -XGET 'elasticsearch:9200/_cat/indices?v&pretty'
 ```
 
 **NOTE:** The host path for the mount `/run/log/journal:/var/log/journal` is different from an os to another.
@@ -33,7 +27,7 @@ services:
     image: mcasimir/journalbeat
 
     environment:
-      ELASTICSEARCH_HOST: elasticsearch.example.com:9200
+      LOGSTASH_HOST: logstash.example.com:5044
       LOG_LEVEL: warning
 
     volumes:
@@ -51,7 +45,7 @@ docker service create \
   -v "/var/tmp/journalbeat:/data" \
   -v "/run/log/journal:/var/log/journal" \
   -v "/etc/machine-id:/etc/machine-id" \
-  -e ELASTICSEARCH_HOST=elasticsearch:9200 \
+  -e LOGSTASH_HOST=logstash:5044 \
   -e LOG_LEVEL: warning \
   mcasimir/journalbeat
 ```
@@ -66,7 +60,7 @@ services:
     image: mcasimir/journalbeat
 
     environment:
-      ELASTICSEARCH_HOST: elasticsearch.example.com:9200
+      LOGSTASH_HOST: logstash.example.com:5044
       LOG_LEVEL: warning
 
     volumes:
