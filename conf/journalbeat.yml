@@ -1,7 +1,7 @@
 journalbeat:
   clean_field_names: true
   seek_position: cursor
-  cursor_seek_fallback: tail
+  cursor_seek_fallback: head
   write_cursor_state: true
   cursor_state_file: /data/journalbeat-cursor-state
   cursor_flush_period: 5s
